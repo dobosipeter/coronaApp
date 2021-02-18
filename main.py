@@ -1,5 +1,8 @@
+import menu
+
+
 def main():
-    print("hello world")
+    menu.main()
 
 
 main()
