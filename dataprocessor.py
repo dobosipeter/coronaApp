@@ -1,6 +1,7 @@
 # using the COVID-19 data API from rapidapi.com
 import json
 import requests
+import  visualization
 
 
 def get_total():
@@ -16,6 +17,8 @@ def get_total():
     print("The number of confirmed cases: {}.\nThe number of recovered: {}.\nThe number of critical: {}.\nThe mumber "
           "of deaths: {}.\nLast updated: {}.\n".format(data['confirmed'], data['recovered'], data['critical'],
                                                        data['deaths'], data['lastUpdate']))
+
+    visualization.visualize(('Sick', 'Dead', 'Recovered'), [data['confirmed'], data['deaths'], data['recovered']], ['red', 'black', 'green'], (0, 0, 0))
 
 
 def get_latest_country_data_by_code(countrycode):

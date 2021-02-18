@@ -1,11 +1,11 @@
 import dataprocessor
-
+import visualization
 
 def main():
     while True:
 
         choice = input('Choose a menupoint!\nYour choices:\n0. Exit\n1. Get world data\n2. Get data by '
-                       'country code\nYour choice: ') 
+                       'country code\nYour choice: ')
         if choice == '0':
             break
         elif choice == '1':
