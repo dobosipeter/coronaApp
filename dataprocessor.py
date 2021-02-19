@@ -18,10 +18,11 @@ def get_total():
           "of deaths: {}.\nLast updated: {}.\n".format(data['confirmed'], data['recovered'], data['critical'],
                                                        data['deaths'], data['lastUpdate']))
 
-    visualization.visualize(('Sick', 'Dead', 'Recovered'), [data['confirmed'], data['deaths'], data['recovered']], ['red', 'black', 'green'], (0, 0, 0))
+    visualization.visualize("World Data", ('Sick', 'Dead', 'Recovered'), [data['confirmed'], data['deaths'], data['recovered']], ['red', 'grey', 'green'], (0, 0, 0))
 
 
 def get_latest_country_data_by_code(countrycode):
+    #region countrydata
     url = "https://covid-19-data.p.rapidapi.com/country/code"
 
     querystring = {"code": countrycode}
@@ -38,3 +39,12 @@ def get_latest_country_data_by_code(countrycode):
           "of critical: {}.\nThe mumber "
           "of deaths: {}.\nLast updated: {}.\n".format(data['country'], data['confirmed'], data['recovered'], data['critical'],
                                                        data['deaths'], data['lastUpdate']))
+    #endregion
+
+
+
+    #region visualizations
+    visualization.visualize(data['country'], ('Sick', 'Dead', 'Recovered'), [data['confirmed'], data['deaths'], data['recovered']], ['red', 'grey', 'green'], (0, 0, 0))
+    #visualization.visualize('{} and the world'.format(data['country']), data['confirmed'])
+    #endregion
+

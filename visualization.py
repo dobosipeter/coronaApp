@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 
-def visualize(labels, sizes, colors, explode):
+def visualize(title, labels, sizes, colors, explode):
     # Data to plot
     #labels = 'Python', 'C++', 'Ruby', 'Java'
     #sizes = [215, 130, 245, 210]
@@ -13,4 +13,5 @@ def visualize(labels, sizes, colors, explode):
     autopct='%1.1f%%', shadow=True, startangle=140)
 
     plt.axis('equal')
+    plt.title(title)
     plt.show()
