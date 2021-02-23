@@ -2,6 +2,8 @@ import dataprocessor
 
 
 def main():
+    """ Display the menu of the program and handle user input. """
+    print("Welcome to the covidApp!")
     while True:
 
         choice = input('Choose a menupoint!\nYour choices:\n0. Exit\n1. Get world data\n2. Get data by '

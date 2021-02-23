@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 
 
 def visualize(title, labels, sizes, colors, explode):
+    """ Draw a piechart using pyplot with the given parameters. """
+    # The default configuration, left here so that I don't have to constantly look up how to use the method.
     # Data to plot
     # labels = 'Python', 'C++', 'Ruby', 'Java'
     # sizes = [215, 130, 245, 210]
