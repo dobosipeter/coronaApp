@@ -1,5 +1,5 @@
 import dataprocessor
-import visualization
+
 
 def main():
     while True:
@@ -10,11 +10,11 @@ def main():
             break
         elif choice == '1':
             dataprocessor.get_total()
-        elif choice =='2':
+        elif choice == '2':
             dataprocessor.get_latest_country_data_by_code(input("Enter the country code of the country you are "
                                                                 "interested in. Country code is in ISO 3166-1 "
                                                                 "standard.\n"))
         else:
-            print('in the menu')
+            print('No such option.')
 
     print("Goodbye!")
