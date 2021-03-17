@@ -88,4 +88,5 @@ def get_latest_country_data_by_code(countrycode):
     visualization.visualize('{} and the world'.format(data['country']), (data['country'], 'Rest of the World'),
                             [data['confirmed'] + data['critical'], world_data['confirmed'] + world_data['critical']],
                             ['blue', 'orange'], (0.1, 0))
+    visualization.show()
     # endregion

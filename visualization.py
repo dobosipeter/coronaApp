@@ -16,4 +16,8 @@ def visualize(title, labels, sizes, colors, explode):
 
     plt.axis('equal')
     plt.title(title)
+    # plt.show()
+
+
+def show():
     plt.show()
