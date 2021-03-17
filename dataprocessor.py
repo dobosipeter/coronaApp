@@ -38,9 +38,9 @@ def get_total(flag=False):
 
         # region visualization
         # Draw the chart with the given data.
-        visualization.visualize("World Data", ('Sick', 'Dead', 'Recovered'),
-                                [data['confirmed'], data['deaths'], data['recovered']], ['red', 'grey', 'green'],
-                                (0, 0, 0))
+        visualization.pie_visualize("World Data", ('Sick', 'Dead', 'Recovered'),
+                                    [data['confirmed'], data['deaths'], data['recovered']], ['red', 'grey', 'green'],
+                                    (0, 0, 0))
         # endregion
     # endregion
 
@@ -63,6 +63,8 @@ def get_latest_country_data_by_code(countrycode):
     # endregion
 
     # Convert the json response into a dictionary we can use.
+    if len(response.text) == 2:
+        raise Exception("Illegal country code")
     data = json.loads(response.text[1:-1])
     # Print the countrydata.
     print("The name of the country: {}\nThe number of confirmed cases: {}.\nThe number of recovered: {}.\nThe number "
@@ -83,10 +85,11 @@ def get_latest_country_data_by_code(countrycode):
 
     # region visualizations
     # Draw the charts with the given data.
-    visualization.visualize(data['country'], ('Sick', 'Dead', 'Recovered'),
-                            [data['confirmed'], data['deaths'], data['recovered']], ['red', 'grey', 'green'], (0, 0, 0))
-    visualization.visualize('{} and the world'.format(data['country']), (data['country'], 'Rest of the World'),
-                            [data['confirmed'] + data['critical'], world_data['confirmed'] + world_data['critical']],
-                            ['blue', 'orange'], (0.1, 0))
-    visualization.show()
+    visualization.pie_visualize(data['country'], ('Sick', 'Dead', 'Recovered'),
+                                [data['confirmed'], data['deaths'], data['recovered']], ['red', 'grey', 'green'],
+                                (0, 0, 0))
+    visualization.pie_visualize('{} and the world'.format(data['country']), (data['country'], 'Rest of the World'),
+                                [data['confirmed'] + data['critical'],
+                                 world_data['confirmed'] + world_data['critical']],
+                                ['blue', 'orange'], (0.1, 0))
     # endregion

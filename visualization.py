@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 
-def visualize(title, labels, sizes, colors, explode):
+def pie_visualize(title, labels, sizes, colors, explode):
     """ Draw a piechart using pyplot with the given parameters. """
     # The default configuration, left here so that I don't have to constantly look up how to use the method.
     # Data to plot
@@ -16,7 +16,11 @@ def visualize(title, labels, sizes, colors, explode):
 
     plt.axis('equal')
     plt.title(title)
-    # plt.show()
+    plt.show()
+
+
+def subplot(x, y, z):
+    plt.subplot(x, y, z)
 
 
 def show():
