@@ -31,5 +31,8 @@ def barplot():
     plt.bar()
 
 
-def plot(x, y):
+def plot(x, y, label, xaxis, yaxis):
     plt.plot(x, y)
+    plt.title(label, loc="center")
+    plt.xlabel(xaxis)
+    plt.ylabel(yaxis)

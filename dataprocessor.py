@@ -115,9 +115,8 @@ def get_daily_data_by_country_code(day, country_code):
 
 def get_last_seven_days_by_country_code_and_week(country_code, target_day):
     """ Get information about the given week of a country, plot the data. """
-    # Add the first day to the week
+    # Add the last day to the week.
     week = [target_day]
-    weekly_data = []
     # Get the previous six days.
     for i in range(1, 7):
         week.append((datetime.strptime(target_day, "%Y-%m-%d") - timedelta(days=i)).strftime("%Y-%m-%d"))
@@ -125,20 +124,23 @@ def get_last_seven_days_by_country_code_and_week(country_code, target_day):
     # Get the data for the week.
     print("Getting data for the seven days, this will take a couple of seconds.")
 
+    weekly_data = []
     for day in week:
         print("Currently getting data for {}".format(day))
         weekly_data.append(get_daily_data_by_country_code(day, country_code))
-        # still have to wait for the api
+        # We still have to wait for the api.
         time.sleep(2)
 
-    # The dates of the data
+    # The dates of the data.
     dates = get_data_from_dict(weekly_data, "date")
+    # Cut the year from the date.
     cut_dates = []
     for i in range(len(dates)):
         cut_dates.append(dates[i][5:])
 
-    dates.reverse()
+    # Reverse the cut dates, so they are shown in the correct order.
     cut_dates.reverse()
+
     # The list of provinces from the timeframe
     provinces = get_data_from_dict(weekly_data, "provinces")
     # The list of actual provinces, in the previous one they were in a list each.
@@ -151,7 +153,7 @@ def get_last_seven_days_by_country_code_and_week(country_code, target_day):
     confirmed.reverse()
 
     # Visualize the data
-    visualization.plot(cut_dates, confirmed)
+    visualization.plot(cut_dates, confirmed, weekly_data[0]["country"], "Date", "Confirmed cases")
     visualization.show()
 
     # plotting goes here (probably outside this loop)
