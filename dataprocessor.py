@@ -1,7 +1,7 @@
 # using the free tier of Gramzivi's COVID-19 data API from rapidapi.com
 import json
 import time
-from datetime import date, timedelta
+from datetime import timedelta, datetime
 import requests
 import visualization
 
@@ -113,27 +113,60 @@ def get_daily_data_by_country_code(day, country_code):
     return data
 
 
-def get_last_seven_days_by_country_code(country_code):
-    """ Get information about the last seven days of a country, plot the data. """
-    today = date.today()
-    week = [today.strftime("%Y-%m-%d")]
+def get_last_seven_days_by_country_code_and_week(country_code, target_day):
+    """ Get information about the given week of a country, plot the data. """
+    # Add the first day to the week
+    week = [target_day]
     weekly_data = []
+    # Get the previous six days.
     for i in range(1, 7):
-        week.append((today - timedelta(days=i)).strftime("%Y-%m-%d"))
-    
+        week.append((datetime.strptime(target_day, "%Y-%m-%d") - timedelta(days=i)).strftime("%Y-%m-%d"))
+
+    # Get the data for the week.
+    print("Getting data for the seven days, this will take a couple of seconds.")
+
     for day in week:
-        print("Getting data for the last seven days, this will take a couple of seconds.")
         print("Currently getting data for {}".format(day))
         weekly_data.append(get_daily_data_by_country_code(day, country_code))
         # still have to wait for the api
         time.sleep(2)
 
-        # plotting goes here (probably outside this loop)
-        # ideas to plot:
-        # number of confirmed cases, deaths, recovery, country vs the world, maybe percentages?
-        # dont forget that the response data contains the day it was requested for!
-        # maybe define a method for building the data you need to plot?
-        # datas = getstuff(parameter): for data in weekly_data return data[parameter]
-        # idk how to use plot yet, but probably something like plot(datas, week)
-    
-    today_string = today.strftime("%Y-%m-%d")
+    # The dates of the data
+    dates = get_data_from_dict(weekly_data, "date")
+    cut_dates = []
+    for i in range(len(dates)):
+        cut_dates.append(dates[i][5:])
+
+    dates.reverse()
+    cut_dates.reverse()
+    # The list of provinces from the timeframe
+    provinces = get_data_from_dict(weekly_data, "provinces")
+    # The list of actual provinces, in the previous one they were in a list each.
+    act_prov = []
+    for province in provinces:
+        act_prov.append(province[0])
+
+    # The list of confirmed cases in the given timeframe.
+    confirmed = get_data_from_dict(act_prov, "confirmed")
+    confirmed.reverse()
+
+    # Visualize the data
+    visualization.plot(cut_dates, confirmed)
+    visualization.show()
+
+    # plotting goes here (probably outside this loop)
+    # ideas to plot:
+    # number of confirmed cases, deaths, recovery, country vs the world, maybe percentages?
+    # dont forget that the response data contains the day it was requested for!
+    # maybe define a method for building the data you need to plot?
+    # datas = getstuff(parameter): for data in weekly_data return data[parameter]
+    # idk how to use plot yet, but probably something like plot(datas, week)
+
+
+def get_data_from_dict(list_of_dicts, parameter):
+    """ Return a list of the given parameters from a given list of dictionaries """
+    ret_list = []
+    for item in list_of_dicts:
+        ret_list.append(item[parameter])
+
+    return ret_list
