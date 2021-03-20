@@ -1,6 +1,7 @@
 # using the free tier of Gramzivi's COVID-19 data API from rapidapi.com
 import json
 import time
+from datetime import date, timedelta
 import requests
 import visualization
 
@@ -93,3 +94,46 @@ def get_latest_country_data_by_code(countrycode):
                                  world_data['confirmed'] + world_data['critical']],
                                 ['blue', 'orange'], (0.1, 0))
     # endregion
+
+
+def get_daily_data_by_country_code(day, country_code):
+    """ Get the daily report for a given country. """
+    url = "https://covid-19-data.p.rapidapi.com/report/country/code"
+
+    querystring = {"date": day, "code": country_code}
+
+    headers = {
+        'x-rapidapi-key': "79a3faf042msh5370fe793f1dfabp123310jsnc4b60e1d6d0a",
+        'x-rapidapi-host': "covid-19-data.p.rapidapi.com"
+    }
+
+    response = requests.request("GET", url, headers=headers, params=querystring)
+    data = json.loads(response.text[1:-1])
+
+    return data
+
+
+def get_last_seven_days_by_country_code(country_code):
+    """ Get information about the last seven days of a country, plot the data. """
+    today = date.today()
+    week = [today.strftime("%Y-%m-%d")]
+    weekly_data = []
+    for i in range(1, 7):
+        week.append((today - timedelta(days=i)).strftime("%Y-%m-%d"))
+    
+    for day in week:
+        print("Getting data for the last seven days, this will take a couple of seconds.")
+        print("Currently getting data for {}".format(day))
+        weekly_data.append(get_daily_data_by_country_code(day, country_code))
+        # still have to wait for the api
+        time.sleep(2)
+
+        # plotting goes here (probably outside this loop)
+        # ideas to plot:
+        # number of confirmed cases, deaths, recovery, country vs the world, maybe percentages?
+        # dont forget that the response data contains the day it was requested for!
+        # maybe define a method for building the data you need to plot?
+        # datas = getstuff(parameter): for data in weekly_data return data[parameter]
+        # idk how to use plot yet, but probably something like plot(datas, week)
+    
+    today_string = today.strftime("%Y-%m-%d")

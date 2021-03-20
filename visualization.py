@@ -25,3 +25,6 @@ def subplot(x, y, z):
 
 def show():
     plt.show()
+    
+def barplot():
+    plt.bar()
