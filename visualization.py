@@ -27,8 +27,11 @@ def show():
     plt.show()
 
 
-def barplot():
-    plt.bar()
+def barplot(x, y, title, xaxis, yaxis):
+    plt.bar(x, y)
+    plt.title(title, loc="center")
+    plt.xlabel(xaxis)
+    plt.ylabel(yaxis)
 
 
 def plot(x, y, label, xaxis, yaxis):
@@ -36,3 +39,11 @@ def plot(x, y, label, xaxis, yaxis):
     plt.title(label, loc="center")
     plt.xlabel(xaxis)
     plt.ylabel(yaxis)
+
+
+def hist(x):
+    plt.hist(x)
+
+
+def stitle(title):
+    plt.suptitle(title)

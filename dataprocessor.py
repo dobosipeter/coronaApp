@@ -3,6 +3,7 @@ import json
 import time
 from datetime import timedelta, datetime
 import requests
+
 import visualization
 
 
@@ -138,31 +139,40 @@ def get_last_seven_days_by_country_code_and_week(country_code, target_day):
     for i in range(len(dates)):
         cut_dates.append(dates[i][5:])
 
-    # Reverse the cut dates, so they are shown in the correct order.
+    # Reverse the cut dates, so they are shown in the correct order when plotting.
     cut_dates.reverse()
 
-    # The list of provinces from the timeframe
-    provinces = get_data_from_dict(weekly_data, "provinces")
-    # The list of actual provinces, in the previous one they were in a list each.
-    act_prov = []
-    for province in provinces:
-        act_prov.append(province[0])
+    # The list of provinces from the given time period.
+    provinces = []
+    for province in get_data_from_dict(weekly_data, "provinces"):
+        provinces.append(province[0])
 
     # The list of confirmed cases in the given timeframe.
-    confirmed = get_data_from_dict(act_prov, "confirmed")
+    confirmed = get_data_from_dict(provinces, "confirmed")
     confirmed.reverse()
+    
+    # The list of deaths in the given timeframe
+    deaths = get_data_from_dict(provinces, "deaths")
+    deaths.reverse()
 
     # Visualize the data
-    visualization.plot(cut_dates, confirmed, weekly_data[0]["country"], "Date", "Confirmed cases")
+
+    visualization.stitle(weekly_data[0]["country"])
+
+    # The plot of confirmed cases.
+    visualization.subplot(1, 2, 1)
+    visualization.plot(cut_dates, confirmed, "Number of confirmed cases", "Date", "Confirmed cases")
+
+    # The plot of deaths.
+    visualization.subplot(1, 2, 2)
+    visualization.barplot(cut_dates, deaths, "Number of deaths", "Date", "Deaths")
+
+    # Show the plots
     visualization.show()
 
     # plotting goes here (probably outside this loop)
     # ideas to plot:
-    # number of confirmed cases, deaths, recovery, country vs the world, maybe percentages?
-    # dont forget that the response data contains the day it was requested for!
-    # maybe define a method for building the data you need to plot?
-    # datas = getstuff(parameter): for data in weekly_data return data[parameter]
-    # idk how to use plot yet, but probably something like plot(datas, week)
+    # deaths, recovery, country vs the world, maybe percentages?
 
 
 def get_data_from_dict(list_of_dicts, parameter):
