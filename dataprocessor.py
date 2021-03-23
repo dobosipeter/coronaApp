@@ -137,7 +137,7 @@ def get_last_seven_days_by_country_code_and_week(country_code, target_day):
     # Cut the year from the date.
     cut_dates = []
     for i in range(len(dates)):
-        cut_dates.append(dates[i][5:])
+        cut_dates.append(dates[i][8:])
 
     # Reverse the cut dates, so they are shown in the correct order when plotting.
     cut_dates.reverse()
@@ -150,13 +150,13 @@ def get_last_seven_days_by_country_code_and_week(country_code, target_day):
     # The list of confirmed cases in the given timeframe.
     confirmed = get_data_from_dict(provinces, "confirmed")
     confirmed.reverse()
-    
+
     # The list of deaths in the given timeframe
     deaths = get_data_from_dict(provinces, "deaths")
     deaths.reverse()
 
     # Visualize the data
-
+    # Set the supertitle for the subplots.
     visualization.stitle(weekly_data[0]["country"])
 
     # The plot of confirmed cases.
@@ -169,10 +169,6 @@ def get_last_seven_days_by_country_code_and_week(country_code, target_day):
 
     # Show the plots
     visualization.show()
-
-    # plotting goes here (probably outside this loop)
-    # ideas to plot:
-    # deaths, recovery, country vs the world, maybe percentages?
 
 
 def get_data_from_dict(list_of_dicts, parameter):

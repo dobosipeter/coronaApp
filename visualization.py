@@ -20,14 +20,17 @@ def pie_visualize(title, labels, sizes, colors, explode):
 
 
 def subplot(x, y, z):
+    """ Call pyplot's subplot with the given parameters. """
     plt.subplot(x, y, z)
 
 
 def show():
+    """ Show the previously plotted plots. """
     plt.show()
 
 
 def barplot(x, y, title, xaxis, yaxis):
+    """ Draw a barplot with the given parameters. """
     plt.bar(x, y)
     plt.title(title, loc="center")
     plt.xlabel(xaxis)
@@ -35,15 +38,13 @@ def barplot(x, y, title, xaxis, yaxis):
 
 
 def plot(x, y, label, xaxis, yaxis):
+    """ Draw a simple lineplot with the given parameters. """
     plt.plot(x, y)
     plt.title(label, loc="center")
     plt.xlabel(xaxis)
     plt.ylabel(yaxis)
 
 
-def hist(x):
-    plt.hist(x)
-
-
 def stitle(title):
+    """ Set the supertitle of a subplot. """
     plt.suptitle(title)
