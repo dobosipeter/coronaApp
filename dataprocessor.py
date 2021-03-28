@@ -1,7 +1,9 @@
 # using the free tier of Gramzivi's COVID-19 data API from rapidapi.com
 import json
 import time
+from datetime import timedelta, datetime
 import requests
+
 import visualization
 
 
@@ -38,9 +40,9 @@ def get_total(flag=False):
 
         # region visualization
         # Draw the chart with the given data.
-        visualization.visualize("World Data", ('Sick', 'Dead', 'Recovered'),
-                                [data['confirmed'], data['deaths'], data['recovered']], ['red', 'grey', 'green'],
-                                (0, 0, 0))
+        visualization.pie_visualize("World Data", ('Sick', 'Dead', 'Recovered'),
+                                    [data['confirmed'], data['deaths'], data['recovered']], ['red', 'grey', 'green'],
+                                    (0, 0, 0))
         # endregion
     # endregion
 
@@ -63,6 +65,8 @@ def get_latest_country_data_by_code(countrycode):
     # endregion
 
     # Convert the json response into a dictionary we can use.
+    if len(response.text) == 2:
+        raise Exception("Illegal country code")
     data = json.loads(response.text[1:-1])
     # Print the countrydata.
     print("The name of the country: {}\nThe number of confirmed cases: {}.\nThe number of recovered: {}.\nThe number "
@@ -83,9 +87,94 @@ def get_latest_country_data_by_code(countrycode):
 
     # region visualizations
     # Draw the charts with the given data.
-    visualization.visualize(data['country'], ('Sick', 'Dead', 'Recovered'),
-                            [data['confirmed'], data['deaths'], data['recovered']], ['red', 'grey', 'green'], (0, 0, 0))
-    visualization.visualize('{} and the world'.format(data['country']), (data['country'], 'Rest of the World'),
-                            [data['confirmed'] + data['critical'], world_data['confirmed'] + world_data['critical']],
-                            ['blue', 'orange'], (0.1, 0))
+    visualization.pie_visualize(data['country'], ('Sick', 'Dead', 'Recovered'),
+                                [data['confirmed'], data['deaths'], data['recovered']], ['red', 'grey', 'green'],
+                                (0, 0, 0))
+    visualization.pie_visualize('{} and the world'.format(data['country']), (data['country'], 'Rest of the World'),
+                                [data['confirmed'] + data['critical'],
+                                 world_data['confirmed'] + world_data['critical']],
+                                ['blue', 'orange'], (0.1, 0))
     # endregion
+
+
+def get_daily_data_by_country_code(day, country_code):
+    """ Get the daily report for a given country. """
+    url = "https://covid-19-data.p.rapidapi.com/report/country/code"
+
+    querystring = {"date": day, "code": country_code}
+
+    headers = {
+        'x-rapidapi-key': "79a3faf042msh5370fe793f1dfabp123310jsnc4b60e1d6d0a",
+        'x-rapidapi-host': "covid-19-data.p.rapidapi.com"
+    }
+
+    response = requests.request("GET", url, headers=headers, params=querystring)
+    data = json.loads(response.text[1:-1])
+
+    return data
+
+
+def get_last_seven_days_by_country_code_and_week(country_code, target_day):
+    """ Get information about the given week of a country, plot the data. """
+    # Add the last day to the week.
+    week = [target_day]
+    # Get the previous six days.
+    for i in range(1, 7):
+        week.append((datetime.strptime(target_day, "%Y-%m-%d") - timedelta(days=i)).strftime("%Y-%m-%d"))
+
+    # Get the data for the week.
+    print("Getting data for the seven days, this will take a couple of seconds.")
+
+    weekly_data = []
+    for day in week:
+        print("Currently getting data for {}".format(day))
+        weekly_data.append(get_daily_data_by_country_code(day, country_code))
+        # We still have to wait for the api.
+        time.sleep(2)
+
+    # The dates of the data.
+    dates = get_data_from_dict(weekly_data, "date")
+    # Cut the year from the date.
+    cut_dates = []
+    for i in range(len(dates)):
+        cut_dates.append(dates[i][8:])
+
+    # Reverse the cut dates, so they are shown in the correct order when plotting.
+    cut_dates.reverse()
+
+    # The list of provinces from the given time period.
+    provinces = []
+    for province in get_data_from_dict(weekly_data, "provinces"):
+        provinces.append(province[0])
+
+    # The list of confirmed cases in the given timeframe.
+    confirmed = get_data_from_dict(provinces, "confirmed")
+    confirmed.reverse()
+
+    # The list of deaths in the given timeframe
+    deaths = get_data_from_dict(provinces, "deaths")
+    deaths.reverse()
+
+    # Visualize the data
+    # Set the supertitle for the subplots.
+    visualization.stitle(weekly_data[0]["country"])
+
+    # The plot of confirmed cases.
+    visualization.subplot(1, 2, 1)
+    visualization.plot(cut_dates, confirmed, "Number of confirmed cases", "Date", "Confirmed cases")
+
+    # The plot of deaths.
+    visualization.subplot(1, 2, 2)
+    visualization.barplot(cut_dates, deaths, "Number of deaths", "Date", "Deaths")
+
+    # Show the plots
+    visualization.show()
+
+
+def get_data_from_dict(list_of_dicts, parameter):
+    """ Return a list of the given parameters from a given list of dictionaries """
+    ret_list = []
+    for item in list_of_dicts:
+        ret_list.append(item[parameter])
+
+    return ret_list
